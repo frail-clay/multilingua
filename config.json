@@ -1,0 +1,8 @@
+{
+    "MODEL_NAME": "meta-llama-3.1-8b-instruct",
+    "API_URL": "http://localhost:1234/v1/chat/completions",
+    "NOTES": {
+        "LM Studio": "API_URL = http://localhost:1234/v1/chat/completions",
+        "Ollama":    "API_URL = http://localhost:11434/v1/chat/completions"
+    }
+}

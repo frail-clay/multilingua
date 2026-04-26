@@ -1,0 +1,422 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* MultiLingua — Dark Editorial styling for Streamlit */
+
+/* ────────────────────────────────────────────────────────────
+   Tokens
+   ──────────────────────────────────────────────────────────── */
+:root {
+  --ml-bg: #0e0e10;
+  --ml-bg-sidebar: #0a0a0c;
+  --ml-surface: #16161a;
+  --ml-surface-hi: #1d1d22;
+  --ml-ink: #f4f1ea;
+  --ml-ink-sec: rgba(244, 241, 234, 0.60);
+  --ml-ink-ter: rgba(244, 241, 234, 0.32);
+  --ml-hairline: rgba(244, 241, 234, 0.08);
+  --ml-accent: #d4a574;
+  --ml-accent-soft: rgba(212, 165, 116, 0.18);
+  --ml-good: #34c759;
+  --ml-red: #e85a5a;
+
+  --ml-font: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --ml-serif: "Instrument Serif", Georgia, serif;
+  --ml-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Streamlit overrides — make the whole app dark editorial
+   ──────────────────────────────────────────────────────────── */
+html, body, [class*="stApp"] {
+  background: var(--ml-bg) !important;
+  color: var(--ml-ink) !important;
+  font-family: var(--ml-font) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide Streamlit chrome we don't want */
+#MainMenu, footer { visibility: hidden; height: 0; }
+header[data-testid="stHeader"] { visibility: hidden; }
+
+/* Sidebar toggle — consistent style in both collapsed and expanded states */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapseButton"] {
+  visibility: visible !important;
+  background: transparent !important;
+}
+[data-testid="stSidebarCollapsedControl"] button,
+[data-testid="stSidebarCollapseButton"] button {
+  color: var(--ml-ink-sec) !important;
+  border: 1px solid rgba(244, 241, 234, 0.18) !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  transition: color .15s, border-color .15s !important;
+}
+[data-testid="stSidebarCollapsedControl"] button:hover,
+[data-testid="stSidebarCollapseButton"] button:hover {
+  color: var(--ml-accent) !important;
+  border-color: var(--ml-accent) !important;
+}
+
+/* Main content column — narrower for readability */
+section.main > div.block-container,
+.main .block-container {
+  max-width: 760px;
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+  background: var(--ml-bg-sidebar) !important;
+  border-right: 1px solid var(--ml-hairline);
+}
+section[data-testid="stSidebar"] * { color: var(--ml-ink) !important; }
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3 {
+  font-family: var(--ml-font);
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Sidebar heading with amber dot */
+.ml-sidebar-heading {
+  font-family: var(--ml-mono) !important; font-size: 10px !important;
+  font-weight: 600 !important; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ml-ink-ter) !important;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.ml-sidebar-dot { color: var(--ml-accent) !important; font-size: 9px; }
+.ml-status-list {
+  font-family: var(--ml-mono); font-size: 10px;
+  line-height: 1.9; color: var(--ml-ink-sec);
+}
+
+/* Sidebar pinned wordmark */
+.ml-sidebar-wordmark {
+  position: fixed; bottom: 0; left: 0;
+  width: 244px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--ml-hairline);
+  background: var(--ml-bg-sidebar);
+}
+.ml-sidebar-wordmark-name {
+  font-size: 12px; font-weight: 500; letter-spacing: 0.3px;
+  margin-bottom: 3px; color: var(--ml-ink);
+}
+
+/* Sidebar input controls */
+section[data-testid="stSidebar"] input,
+section[data-testid="stSidebar"] .stTextInput input {
+  background: var(--ml-surface) !important;
+  border: 1px solid var(--ml-hairline) !important;
+  color: var(--ml-ink) !important;
+  font-family: var(--ml-mono) !important;
+  font-size: 11px !important;
+  border-radius: 4px !important;
+}
+section[data-testid="stSidebar"] label {
+  font-family: var(--ml-mono) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ml-ink-ter) !important;
+}
+/* API endpoint input — amber value text (2nd text input in sidebar) */
+section[data-testid="stSidebar"] div[data-testid="stTextInput"]:nth-of-type(2) input {
+  color: var(--ml-accent) !important;
+}
+
+/* Slider — amber thumb only; leave track to Streamlit */
+[data-testid="stSlider"] [role="slider"],
+[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
+  background: var(--ml-accent) !important;
+  box-shadow: 0 0 8px var(--ml-accent) !important;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Header bar (top of main column)
+   ──────────────────────────────────────────────────────────── */
+.ml-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 0 16px;
+  border-bottom: 1px solid var(--ml-hairline);
+  margin-bottom: 32px;
+}
+.ml-nav-brand {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; font-weight: 500; letter-spacing: 0.3px;
+}
+.ml-nav-dot {
+  width: 8px; height: 8px; border-radius: 4px;
+  background: var(--ml-accent);
+  box-shadow: 0 0 12px var(--ml-accent);
+}
+.ml-nav-dot--good { background: var(--ml-good); box-shadow: 0 0 12px var(--ml-good); }
+.ml-nav-tagline {
+  font-size: 12px; font-family: var(--ml-font);
+  color: var(--ml-ink-sec); margin-top: 3px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ml-nav-tagline-ai {
+  background: var(--ml-accent); color: #1a1208;
+  font-family: var(--ml-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 1px; padding: 2px 6px; border-radius: 3px;
+  box-shadow: 0 0 12px rgba(212,165,116,0.5);
+}
+.ml-nav-version {
+  font-size: 10px; font-family: var(--ml-mono);
+  color: var(--ml-ink-ter); letter-spacing: 0.8px;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Hero — eyebrow, serif headline, orb, pill
+   ──────────────────────────────────────────────────────────── */
+.ml-hero { text-align: center; padding: 12px 0 8px; }
+.ml-eyebrow {
+  font-size: 11px; font-family: var(--ml-mono);
+  color: var(--ml-ink-sec); letter-spacing: 0.4px;
+  margin-bottom: 12px; font-style: normal;
+}
+.ml-headline {
+  font-family: var(--ml-serif);
+  font-size: 44px; line-height: 1.05; font-weight: 400;
+  letter-spacing: -1px; margin: 0;
+}
+.ml-headline em { font-style: italic; color: var(--ml-accent); }
+.ml-headline--muted { color: var(--ml-ink-sec); margin-bottom: 32px; }
+
+/* Orb — pure CSS / SVG */
+.ml-orb-wrap { position: relative; width: 168px; height: 168px; margin: 0 auto; }
+.ml-orb-glow {
+  position: absolute; inset: -40px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,165,116,0.25), transparent 65%);
+  filter: blur(20px);
+  animation: ml-breath 2.4s ease-in-out infinite;
+}
+.ml-orb-rings { position: absolute; inset: 0; }
+.ml-orb-core {
+  position: absolute; inset: 38px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, var(--ml-accent), #8c5a30);
+  box-shadow: 0 0 50px var(--ml-accent), inset 0 1px 0 rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+}
+.ml-orb--rec .ml-orb-core {
+  background: radial-gradient(circle at 30% 25%, var(--ml-red), #8c2020);
+  box-shadow: 0 0 60px var(--ml-red), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.ml-orb--rec .ml-orb-glow {
+  background: radial-gradient(circle, rgba(232,90,90,0.3), transparent 65%);
+}
+@keyframes ml-breath {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+/* "Tap to speak" pill — wraps around Streamlit's button */
+.ml-pill-wrap { display: flex; justify-content: center; margin-top: 28px; }
+.stButton > button {
+  background: transparent !important;
+  color: var(--ml-ink-sec) !important;
+  border: 1px solid var(--ml-hairline) !important;
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  font-size: 11px !important;
+  font-family: var(--ml-mono) !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  transition: border-color .15s, color .15s;
+}
+.stButton > button:hover {
+  border-color: var(--ml-accent) !important;
+  color: var(--ml-ink) !important;
+}
+.stButton > button:focus { box-shadow: none !important; }
+.stButton > button::before {
+  content: "●"; color: var(--ml-accent); margin-right: 10px;
+  text-shadow: 0 0 8px var(--ml-accent);
+}
+
+/* Clear — tertiary text-link style */
+button[kind="tertiary"] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 2px 0 !important;
+  font-size: 10px !important;
+  letter-spacing: 1.2px !important;
+  color: var(--ml-ink-ter) !important;
+  text-transform: uppercase !important;
+  font-family: var(--ml-mono) !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+}
+button[kind="tertiary"]:hover {
+  color: var(--ml-accent) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+button[kind="tertiary"]::before { display: none !important; }
+
+/* ────────────────────────────────────────────────────────────
+   Section labels
+   ──────────────────────────────────────────────────────────── */
+.ml-section-label {
+  font-size: 10px; font-family: var(--ml-mono);
+  color: var(--ml-ink-ter); letter-spacing: 1.5px;
+  margin: 32px 0 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Transcript turns (scrollable history with fade)
+   ──────────────────────────────────────────────────────────── */
+.ml-turn {
+  padding: 20px 22px;
+  background: var(--ml-surface-hi);
+  border-radius: 6px;
+  border-left: 2px solid var(--ml-ink-ter);
+  margin-bottom: 10px;
+}
+.ml-turn--mine {
+  background: var(--ml-surface);
+  border-left-color: var(--ml-accent);
+}
+.ml-turn--faded { opacity: 0.55; }
+
+.ml-turn-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 11px; font-family: var(--ml-mono);
+  color: var(--ml-ink-ter); letter-spacing: 1px;
+}
+.ml-turn-meta-who { color: var(--ml-accent) !important; }
+.ml-turn--mine .ml-turn-meta-who { color: var(--ml-ink-ter) !important; }
+
+.ml-turn-body {
+  font-family: var(--ml-serif);
+  line-height: 1.45;
+  color: var(--ml-ink);
+  font-size: 18px;
+}
+.ml-turn--mine .ml-turn-body { font-size: 22px; }
+.ml-turn-body--rtl { direction: rtl; text-align: right; }
+
+.ml-turn-stats {
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--ml-hairline);
+  display: flex; gap: 16px;
+  font-size: 10px; font-family: var(--ml-mono);
+  color: var(--ml-ink-ter); letter-spacing: 0.8px;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Language pills
+   ──────────────────────────────────────────────────────────── */
+.ml-pills {
+  display: flex; flex-wrap: nowrap; gap: 4px;
+  justify-content: center; overflow-x: auto;
+}
+.ml-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 7px;
+  background: transparent;
+  border: 1px solid var(--ml-hairline);
+  border-radius: 4px;
+  font-size: 10px; font-weight: 500;
+  color: var(--ml-ink-sec);
+  font-family: var(--ml-mono); letter-spacing: 0.4px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.ml-pill-flag {
+  font-family: var(--ml-font); font-size: 11px;
+  line-height: 1; display: inline-flex; align-items: center;
+}
+.ml-pill--active {
+  background: var(--ml-accent-soft);
+  border-color: var(--ml-accent);
+  color: var(--ml-accent);
+}
+.ml-pill--missing { opacity: 0.5; }
+
+/* ────────────────────────────────────────────────────────────
+   Recording indicator
+   ──────────────────────────────────────────────────────────── */
+.ml-recording-indicator {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--ml-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 1.5px; color: var(--ml-accent);
+  padding: 10px 0;
+}
+.ml-recording-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ml-accent);
+  box-shadow: 0 0 8px var(--ml-accent);
+  animation: ml-breath 1s ease-in-out infinite;
+}
+
+/* ────────────────────────────────────────────────────────────
+   How it works — pipeline (sidebar)
+   ──────────────────────────────────────────────────────────── */
+.ml-pipeline-list {
+  font-family: var(--ml-mono);
+  font-size: 10px;
+}
+.ml-pipeline-list > div {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  line-height: 2.2;
+}
+.ml-pipeline-num    { color: var(--ml-accent); font-weight: 500; }
+.ml-pipeline-action { color: var(--ml-ink-sec); }
+.ml-pipeline-tech   { color: var(--ml-accent); }
+
+/* "[ · HOW IT WORKS ]" nav bar pill */
+.ml-how-it-works-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ml-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.4px;
+  color: var(--ml-ink-sec) !important;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color .15s;
+  cursor: pointer;
+}
+.ml-how-it-works-link:hover,
+.ml-how-it-works-link:hover .ml-hiw-bracket,
+.ml-how-it-works-link:hover .ml-how-it-works-dot {
+  color: var(--ml-accent) !important;
+}
+.ml-how-it-works-dot {
+  color: var(--ml-accent) !important;
+  font-size: 10px;
+  line-height: 1;
+}
+.ml-hiw-bracket {
+  color: var(--ml-accent) !important;
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Footer status bar
+   ──────────────────────────────────────────────────────────── */
+.ml-footer {
+  margin-top: 32px; padding: 14px 0;
+  border-top: 1px solid var(--ml-hairline);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 10px; font-family: var(--ml-mono);
+  color: var(--ml-ink-ter); letter-spacing: 0.8px;
+}
+.ml-footer-left { display: flex; gap: 14px; }
+.ml-good { color: var(--ml-good); }
+.ml-accent-dot { color: var(--ml-accent); }

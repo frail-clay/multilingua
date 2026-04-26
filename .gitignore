@@ -1,0 +1,30 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Temp / audio files
+*.wav
+*.mp3
+*.tmp
+*.zip
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Whisper model cache (large files, downloaded automatically)
+~/.cache/whisper/
+
+# Archive folder (local recovery only, not for sharing)
+_archive/
