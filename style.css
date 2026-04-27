@@ -36,7 +36,15 @@ html, body, [class*="stApp"] {
 
 /* Hide Streamlit chrome we don't want */
 #MainMenu, footer { visibility: hidden; height: 0; }
-header[data-testid="stHeader"] { visibility: hidden; }
+header[data-testid="stHeader"] {
+  display: none !important;
+}
+[data-testid="stAppViewContainer"] > section {
+  padding-top: 0 !important;
+}
+[data-testid="stMain"] > div {
+  padding-top: 0 !important;
+}
 
 /* Sidebar toggle — consistent style in both collapsed and expanded states */
 [data-testid="stSidebarCollapsedControl"],
@@ -61,8 +69,8 @@ header[data-testid="stHeader"] { visibility: hidden; }
 /* Main content column — narrower for readability */
 section.main > div.block-container,
 .main .block-container {
-  max-width: 760px;
-  padding-top: 1rem;
+  max-width: 860px;
+  padding-top: 0.25rem;
   padding-bottom: 4rem;
 }
 
@@ -169,12 +177,13 @@ section[data-testid="stSidebar"] div[data-testid="stTextInput"]:nth-of-type(2) i
 .ml-nav-version {
   font-size: 10px; font-family: var(--ml-mono);
   color: var(--ml-ink-ter); letter-spacing: 0.8px;
+  white-space: nowrap;
 }
 
 /* ────────────────────────────────────────────────────────────
    Hero — eyebrow, serif headline, orb, pill
    ──────────────────────────────────────────────────────────── */
-.ml-hero { text-align: center; padding: 12px 0 8px; }
+.ml-hero { text-align: center; padding: 4px 0 8px; }
 .ml-eyebrow {
   font-size: 11px; font-family: var(--ml-mono);
   color: var(--ml-ink-sec); letter-spacing: 0.4px;
@@ -219,13 +228,13 @@ section[data-testid="stSidebar"] div[data-testid="stTextInput"]:nth-of-type(2) i
 .ml-pill-wrap { display: flex; justify-content: center; margin-top: 28px; }
 .stButton > button {
   background: transparent !important;
-  color: var(--ml-ink-sec) !important;
-  border: 1px solid var(--ml-hairline) !important;
+  color: var(--ml-ink) !important;
+  border: 1px solid rgba(244, 241, 234, 0.22) !important;
   border-radius: 999px !important;
-  padding: 10px 22px !important;
+  padding: 8px 24px !important;
   font-size: 11px !important;
   font-family: var(--ml-mono) !important;
-  letter-spacing: 1.2px !important;
+  letter-spacing: 2px !important;
   text-transform: uppercase;
   font-weight: 500 !important;
   transition: border-color .15s, color .15s;

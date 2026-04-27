@@ -77,6 +77,17 @@ def load_config() -> dict:
 config = load_config()
 SAMPLERATE = 16000
 
+def detect_loaded_model(api_url: str) -> str:
+    try:
+        base = api_url.split("/v1/")[0]
+        r = requests.get(f"{base}/v1/models", timeout=3)
+        models = r.json().get("data", [])
+        if models:
+            return models[0]["id"]
+    except Exception:
+        pass
+    return config.get("MODEL_NAME", "meta-llama-3.1-8b-instruct")
+
 LANG_FLAGS = {
     "en": "🇬🇧", "ar": "🇸🇦", "fr": "🇫🇷", "es": "🇪🇸",
     "de": "🇩🇪", "it": "🇮🇹", "pt": "🇵🇹", "hi": "🇮🇳",
@@ -141,8 +152,22 @@ def record_audio(seconds: int = 5, indicator: st.delta_generator.DeltaGenerator 
         return f.name
 
 
+# Languages that use non-Latin scripts — Whisper base model sometimes
+# romanises these unless you pass the language hint explicitly.
+_NON_LATIN = {"hi", "ar", "zh", "ja", "ko", "ru"}
+
 def transcribe(path: str) -> tuple[str, float, str | None]:
-    result = whisper_model.transcribe(path)
+    # First pass: let Whisper detect the language from audio features.
+    probe = whisper_model.transcribe(path)
+    whisper_lang = probe.get("language")
+
+    # Second pass: re-transcribe with the language hint for non-Latin scripts
+    # so Whisper outputs Devanagari, Arabic, CJK, Cyrillic — not romanised text.
+    if whisper_lang in _NON_LATIN:
+        result = whisper_model.transcribe(path, language=whisper_lang)
+    else:
+        result = probe
+
     text = result["text"].strip()
     segs = result.get("segments", [])
     if segs:
@@ -150,24 +175,34 @@ def transcribe(path: str) -> tuple[str, float, str | None]:
         confidence = round(1.0 - avg_no_speech, 2)
     else:
         confidence = 0.90
-    # Whisper detects language from audio features before decoding — far more
-    # reliable than running lingua on romanized/transliterated transcript text.
-    whisper_lang = result.get("language")  # e.g. "hi", "en", "zh"
     return text, confidence, whisper_lang
 
 
+# Explicit script instructions for languages where LLMs tend to romanise.
+_SCRIPT_INSTRUCTIONS = {
+    "hi":    "Always write in Devanagari script. Never use Roman/Latin transliteration.",
+    "ar":    "Always write in Arabic script. Never use Roman transliteration.",
+    "zh-cn": "Always write in Chinese characters (Simplified).",
+    "ja":    "Always write in Japanese script (Kanji, Hiragana, Katakana).",
+    "ko":    "Always write in Korean (Hangul) script.",
+    "ru":    "Always write in Cyrillic script.",
+}
+
 def query_llm(prompt: str, model: str, endpoint: str, lang_code: str) -> tuple[str, int]:
     lang_name = LANG_NAMES.get(lang_code, "the same language the user spoke in")
+    script_note = _SCRIPT_INSTRUCTIONS.get(lang_code, "")
+    system_prompt = (
+        f"You are a helpful voice assistant. "
+        f"Always respond in {lang_name}. "
+        f"Never switch to another language. "
+        f"{script_note}"
+    ).strip()
     payload = {
         "model": model,
         "messages": [
             {
                 "role": "system",
-                "content": (
-                    f"You are a helpful voice assistant. "
-                    f"Always respond in {lang_name}. "
-                    f"Never switch to another language."
-                ),
+                "content": system_prompt,
             },
             {"role": "user", "content": prompt},
         ],
@@ -209,14 +244,14 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    model = st.text_input(
-        "MODEL",
-        value=config.get("MODEL_NAME", "meta-llama-3.1-8b-instruct"),
-        help="LLM identifier passed to the API",
-    )
     endpoint = st.text_input(
         "API ENDPOINT",
         value=config.get("API_URL", "http://localhost:1234/v1/chat/completions"),
+    )
+    model = st.text_input(
+        "MODEL",
+        value=detect_loaded_model(endpoint),
+        help="Auto-detected from LM Studio. Edit to override.",
     )
     record_seconds = st.slider(
         "RECORD DURATION",
@@ -347,14 +382,13 @@ st.markdown(
 # ─────────────────────────────────────────────────────────────────────
 # SPEAK BUTTON
 # ─────────────────────────────────────────────────────────────────────
-_, col_btn, _ = st.columns([1, 1, 1])
+_, col_btn, _ = st.columns([1, 2, 1])
 with col_btn:
     speak = st.button(
-        f"Tap to speak · {record_seconds}s",
-        use_container_width=True,
+        f"Tap to speak  |  {record_seconds} seconds",
         key="speak_btn",
     )
-    indicator = st.empty()
+indicator = st.empty()
 
 if speak:
     audio_path = record_audio(seconds=record_seconds, indicator=indicator)

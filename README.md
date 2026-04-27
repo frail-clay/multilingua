@@ -178,6 +178,21 @@ Edit `config.json` to set defaults — model name and endpoint can also be chang
 
 All visual tokens (colors, fonts, spacing) live at the top of `style.css` under `:root {}`. Change `--ml-accent` to retheme the whole app.
 
+> **Note:** The app auto-detects whichever model you have loaded in LM Studio by calling `GET /v1/models` on startup. You no longer need to manually update `MODEL_NAME` in `config.json` — just load a model in LM Studio and the app picks it up automatically.
+
+---
+
+## API Reference
+
+The app makes two calls to your local LLM backend. No external APIs, no API keys required.
+
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/v1/models` | GET | Auto-detect the model currently loaded in LM Studio or Ollama |
+| `/v1/chat/completions` | POST | Generate a reply in the detected language |
+
+Both endpoints follow the OpenAI API spec and work with any compatible backend.
+
 ---
 
 ## Tech Stack
@@ -190,6 +205,7 @@ All visual tokens (colors, fonts, spacing) live at the top of `style.css` under 
 | Language Model | LM Studio or Ollama (local, OpenAI-compatible API) |
 | Text-to-Speech | macOS `say` command |
 | Audio Recording | sounddevice + scipy |
+| Fonts | Google Fonts CDN (Inter, Instrument Serif, JetBrains Mono) |
 
 ---
 
@@ -201,5 +217,6 @@ Every component runs locally on your machine:
 - Language detection runs offline (no API calls)
 - LLM inference runs on your hardware via LM Studio or Ollama
 - TTS uses macOS built-in voices
+- No API keys, no accounts, no usage tracking
 
 **Your voice and conversations never leave your device.**
